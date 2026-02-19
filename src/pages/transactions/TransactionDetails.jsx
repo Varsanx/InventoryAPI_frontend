@@ -197,8 +197,8 @@ const TransactionDetails = () => {
             </div>
           )}
         </div>
-
-        {/* Debug Info (Remove this in production) */}
+        {/*
+        # Debug Info (Remove this in production) 
         <div className="mt-6 pt-6 border-t">
           <details className="text-xs text-gray-500">
             <summary className="cursor-pointer hover:text-gray-700">Debug Info</summary>
@@ -207,6 +207,8 @@ const TransactionDetails = () => {
             </pre>
           </details>
         </div>
+        */}
+
       </div>
     </Layout>
   );
