@@ -1,42 +1,77 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const Sidebar = () => {
   const location = useLocation();
-
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
-
-  const menuItems = [
-    { path: '/dashboard', name: 'Dashboard', icon: '📊' },
-    { path: '/items', name: 'Items', icon: '📦' },
-    { path: '/transactions', name: 'Transactions', icon: '🔄' },
-    { path: '/reports', name: 'Reports', icon: '📈' },
-    { path: '/alerts', name: 'Alerts', icon: '🔔' },
-  ];
+  const { user } = useAuth(); // ✅ FIX: Import user from useAuth
 
   return (
-    <div className="w-64 bg-gray-800 min-h-screen text-white">
-      <div className="p-4">
-        <h2 className="text-xl font-bold mb-8">Menu</h2>
-        <nav className="space-y-2">
-          {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                isActive(item.path)
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-300 hover:bg-gray-700'
-              }`}
-            >
-              <span className="text-2xl">{item.icon}</span>
-              <span className="font-medium">{item.name}</span>
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </div>
+    <aside className="w-64 bg-gray-800 text-white min-h-screen">
+      <nav className="mt-5">
+        <Link
+          to="/dashboard"
+          className={`flex items-center px-6 py-3 hover:bg-gray-700 ${
+            location.pathname === '/dashboard' ? 'bg-gray-900 border-l-4 border-blue-500' : ''
+          }`}
+        >
+          <span className="mr-3">📊</span>
+          Dashboard
+        </Link>
+
+        <Link
+          to="/items"
+          className={`flex items-center px-6 py-3 hover:bg-gray-700 ${
+            location.pathname.startsWith('/items') ? 'bg-gray-900 border-l-4 border-blue-500' : ''
+          }`}
+        >
+          <span className="mr-3">📦</span>
+          Items
+        </Link>
+
+        <Link
+          to="/transactions"
+          className={`flex items-center px-6 py-3 hover:bg-gray-700 ${
+            location.pathname.startsWith('/transactions') ? 'bg-gray-900 border-l-4 border-blue-500' : ''
+          }`}
+        >
+          <span className="mr-3">🔄</span>
+          Transactions
+        </Link>
+
+        <Link
+          to="/reports"
+          className={`flex items-center px-6 py-3 hover:bg-gray-700 ${
+            location.pathname === '/reports' ? 'bg-gray-900 border-l-4 border-blue-500' : ''
+          }`}
+        >
+          <span className="mr-3">📈</span>
+          Reports
+        </Link>
+
+        <Link
+          to="/alerts"
+          className={`flex items-center px-6 py-3 hover:bg-gray-700 ${
+            location.pathname === '/alerts' ? 'bg-gray-900 border-l-4 border-blue-500' : ''
+          }`}
+        >
+          <span className="mr-3">🔔</span>
+          Alerts
+        </Link>
+
+        {/* ✅ ADMIN ONLY MENU - User Management */}
+        {user?.role === 'Admin' && (
+          <Link
+            to="/admin/users"
+            className={`flex items-center px-6 py-3 hover:bg-gray-700 ${
+              location.pathname === '/admin/users' ? 'bg-gray-900 border-l-4 border-blue-500' : ''
+            }`}
+          >
+            <span className="mr-3">👥</span>
+            User Management
+          </Link>
+        )}
+      </nav>
+    </aside>
   );
 };
 

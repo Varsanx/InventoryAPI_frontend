@@ -2,32 +2,47 @@ import api from './api';
 
 export const authService = {
   login: async (username, password) => {
-    const response = await api.post('/Auth/Login', { username, password });
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data));
+    try {
+      console.log('🌐 authService: Sending login request...', { username });
+      
+      const response = await api.post('/Auth/Login', {
+        username,
+        password
+      });
+      
+      console.log('✅ authService: Login response:', response.data);
+      
+      return response.data;
+    } catch (error) {
+      console.error('❌ authService: Login error:', error);
+      
+      if (error.response) {
+        // Server responded with error status
+        console.error('Server error response:', {
+          status: error.response.status,
+          data: error.response.data
+        });
+      } else if (error.request) {
+        // Request made but no response
+        console.error('No response from server. Backend may not be running.');
+      }
+      
+      throw error;
     }
-    return response.data;
-  },
-
-  register: async (userData) => {
-    const response = await api.post('/Auth/Register', userData);
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data));
-    }
-    return response.data;
   },
 
   logout: () => {
+    console.log('🚪 authService: Logging out...');
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   },
 
   getCurrentUser: () => {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
   },
 
-  isAuthenticated: () => !!localStorage.getItem('token'),
+  isAuthenticated: () => {
+    return !!localStorage.getItem('token');
+  }
 };

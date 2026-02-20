@@ -14,11 +14,35 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    const userData = await authService.login(username, password);
-    setUser(userData);
-    return userData;
-  };
-
+  try {
+    console.log('🔐 AuthContext: Starting login...', { username });
+    
+    const response = await authService.login(username, password);
+    
+    console.log('✅ AuthContext: Login response received:', response);
+    
+    if (response.token) {
+      // Store in localStorage
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response));
+      
+      console.log('💾 AuthContext: Stored in localStorage');
+      
+      // Update state
+      setUser(response);
+      
+      console.log('✅ AuthContext: Login complete');
+      
+      return response;
+    } else {
+      console.error('❌ AuthContext: No token in response');
+      throw new Error('No token received from server');
+    }
+  } catch (error) {
+    console.error('❌ AuthContext: Login failed:', error);
+    throw error;
+  }
+};
   const register = async (userData) => {
     const newUser = await authService.register(userData);
     setUser(newUser);

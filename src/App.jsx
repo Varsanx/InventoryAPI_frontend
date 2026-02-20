@@ -5,6 +5,8 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 // Auth Pages
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import UserManagement from './pages/admin/UserManagement';
+
 
 // Dashboard
 import Dashboard from './pages/dashboard/Dashboard';
@@ -30,7 +32,14 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route
+  path="/admin/users"
+  element={
+    <ProtectedRoute>
+      <UserManagement />
+    </ProtectedRoute>
+  }
+/>
 
           {/* Protected Routes - Dashboard */}
           <Route
@@ -122,6 +131,7 @@ function App() {
             }
           />
 
+      
           {/* Default Route */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           
