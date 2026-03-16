@@ -20,6 +20,7 @@ import ItemStock from './pages/items/ItemStock';
 import TransactionsList from './pages/transactions/TransactionsList';
 import TransactionForm from './pages/transactions/TransactionForm';
 import TransactionDetails from './pages/transactions/TransactionDetails';
+import AdjustmentForm from './pages/transactions/AdjustmentForm';
 
 // Reports & Alerts
 import Reports from './pages/reports/Reports';
@@ -110,6 +111,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+         <Route 
+         path="/transactions/adjustment" 
+         element={
+          <ProtectedRoute>
+            <AdjustmentForm />
+          </ProtectedRoute>
+        } 
+        />
 
           {/* Protected Routes - Reports */}
           <Route

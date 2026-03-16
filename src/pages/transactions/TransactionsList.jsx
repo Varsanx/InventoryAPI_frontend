@@ -73,17 +73,28 @@ const TransactionsList = () => {
       {/* Header */}
       <div className="mb-6 flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Stock Transactions</h2>
-        <button
-          onClick={() => navigate('/transactions/create')}
-          className="btn-primary"
-        >
-          + New Transaction
-        </button>
+
+        <div className="flex space-x-3">
+          <button
+            onClick={() => navigate('/transactions/create')}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            + New Transaction
+          </button>
+
+          <button
+            onClick={() => navigate('/transactions/adjustment')}
+            className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
+          >
+            📝 Stock Adjustment
+          </button>
+        </div>
       </div>
 
       {/* Filter & Sort Bar */}
       <div className="card mb-4 p-4">
         <div className="flex flex-wrap gap-4 items-end">
+
           {/* Transaction Type Filter */}
           <div className="flex flex-col gap-1">
             <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
@@ -172,6 +183,7 @@ const TransactionsList = () => {
               </div>
             </div>
           )}
+
         </div>
       </div>
 
@@ -186,8 +198,7 @@ const TransactionsList = () => {
             No transactions found
             {filter.txnTypeCode && (
               <span className="block text-sm mt-1">
-                for type{' '}
-                <strong>{filter.txnTypeCode}</strong>
+                for type <strong>{filter.txnTypeCode}</strong>
               </span>
             )}
           </div>
@@ -225,12 +236,14 @@ const TransactionsList = () => {
                   </th>
                 </tr>
               </thead>
+
               <tbody className="bg-white divide-y divide-gray-200">
                 {transactions.map((txn) => (
                   <tr key={txn.txnId} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {new Date(txn.txnDate).toLocaleDateString()}
                     </td>
+
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -244,15 +257,19 @@ const TransactionsList = () => {
                         {txn.txnTypeCode}
                       </span>
                     </td>
+
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                       {txn.referenceNo || '-'}
                     </td>
+
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                       {txn.lineCount}
                     </td>
+
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {txn.totalQuantity}
                     </td>
+
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button
                         onClick={() => navigate(`/transactions/${txn.txnId}`)}
