@@ -198,13 +198,12 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
 {/* Low Stock Panel */}
-<div className="bg-white rounded-lg border border-gray-100 shadow-sm animate-fadeIn" style={{ animationDelay: '240ms' }}>
-
+<div className="bg-white rounded-lg border border-gray-100 shadow-sm animate-fadeIn" style={{ animationDelay: '300ms' }}>
   <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
     <div className="flex items-center gap-2">
       <div className="w-1 h-4 rounded-full bg-amber-400" />
       {/* Normal font for title */}
-      <h3 className="text-sm font-normal text-gray-800 tracking-tight">Low Stock Items</h3>
+      <h3 className="text-sm font-bold text-gray-800 tracking-tight">Low Stock Items</h3>
     </div>
     <span className="text-xs text-gray-400">{lowStock.length} items</span>
   </div>
