@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { LanguageProvider } from './contexts/LanguageContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Auth Pages
@@ -29,7 +28,6 @@ import Alerts from './pages/alerts/Alerts';
 function App() {
   return (
     <AuthProvider>
-      <LanguageProvider>
         <Router>
           <Routes>
 
@@ -168,7 +166,6 @@ function App() {
 
           </Routes>
         </Router>
-      </LanguageProvider>
     </AuthProvider>
   );
 }
