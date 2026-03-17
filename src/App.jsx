@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './contexts/LanguageContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Auth Pages
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import UserManagement from './pages/admin/UserManagement';
-
 
 // Dashboard
 import Dashboard from './pages/dashboard/Dashboard';
@@ -29,125 +29,146 @@ import Alerts from './pages/alerts/Alerts';
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route
-  path="/admin/users"
-  element={
-    <ProtectedRoute>
-      <UserManagement />
-    </ProtectedRoute>
-  }
-/>
+      <LanguageProvider>
+        <Router>
+          <Routes>
 
-          {/* Protected Routes - Dashboard */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+            {/* ================= PUBLIC ROUTES ================= */}
 
-          {/* Protected Routes - Items */}
-          <Route
-            path="/items"
-            element={
-              <ProtectedRoute>
-                <ItemsList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/items/create"
-            element={
-              <ProtectedRoute>
-                <ItemForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/items/edit/:id"
-            element={
-              <ProtectedRoute>
-                <ItemForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/items/:id/stock"
-            element={
-              <ProtectedRoute>
-                <ItemStock />
-              </ProtectedRoute>
-            }
-          />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          {/* Protected Routes - Transactions */}
-          <Route
-            path="/transactions"
-            element={
-              <ProtectedRoute>
-                <TransactionsList />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/transactions/create"
-            element={
-              <ProtectedRoute>
-                <TransactionForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/transactions/:id"
-            element={
-              <ProtectedRoute>
-                <TransactionDetails />
-              </ProtectedRoute>
-            }
-          />
-         <Route 
-         path="/transactions/adjustment" 
-         element={
-          <ProtectedRoute>
-            <AdjustmentForm />
-          </ProtectedRoute>
-        } 
-        />
+            {/* ================= ADMIN ROUTES ================= */}
 
-          {/* Protected Routes - Reports */}
-          <Route
-            path="/reports"
-            element={
-              <ProtectedRoute>
-                <Reports />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  <UserManagement />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Protected Routes - Alerts */}
-          <Route
-            path="/alerts"
-            element={
-              <ProtectedRoute>
-                <Alerts />
-              </ProtectedRoute>
-            }
-          />
+            {/* ================= DASHBOARD ================= */}
 
-      
-          {/* Default Route */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          
-          {/* 404 Route */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Router>
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ================= ITEMS ================= */}
+
+            <Route
+              path="/items"
+              element={
+                <ProtectedRoute>
+                  <ItemsList />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/items/create"
+              element={
+                <ProtectedRoute>
+                  <ItemForm />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/items/edit/:id"
+              element={
+                <ProtectedRoute>
+                  <ItemForm />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/items/:id/stock"
+              element={
+                <ProtectedRoute>
+                  <ItemStock />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ================= TRANSACTIONS ================= */}
+
+            <Route
+              path="/transactions"
+              element={
+                <ProtectedRoute>
+                  <TransactionsList />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/transactions/create"
+              element={
+                <ProtectedRoute>
+                  <TransactionForm />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/transactions/:id"
+              element={
+                <ProtectedRoute>
+                  <TransactionDetails />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/transactions/adjustment"
+              element={
+                <ProtectedRoute>
+                  <AdjustmentForm />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ================= REPORTS ================= */}
+
+            <Route
+              path="/reports"
+              element={
+                <ProtectedRoute>
+                  <Reports />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ================= ALERTS ================= */}
+
+            <Route
+              path="/alerts"
+              element={
+                <ProtectedRoute>
+                  <Alerts />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ================= DEFAULT ROUTES ================= */}
+
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+            {/* ================= 404 ROUTE ================= */}
+
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
+          </Routes>
+        </Router>
+      </LanguageProvider>
     </AuthProvider>
   );
 }

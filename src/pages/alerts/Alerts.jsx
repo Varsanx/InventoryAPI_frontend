@@ -140,243 +140,251 @@ const Alerts = () => {
 
   return (
     <Layout>
-      {/* Header */}
-      <div className="mb-6 flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Stock Alerts</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            {unacknowledgedAlerts > 0 && (
-              <span className="text-red-600 font-medium">
-                {unacknowledgedAlerts} unacknowledged alert(s)
-              </span>
-            )}
-          </p>
+      <div className="max-w-full px-4">
+        {/* Header */}
+        <div className="mb-6 flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Stock Alerts</h2>
+            <p className="text-sm text-gray-600 mt-1">
+              {unacknowledgedAlerts > 0 && (
+                <span className="text-red-600 font-medium">
+                  {unacknowledgedAlerts} unacknowledged alert(s)
+                </span>
+              )}
+            </p>
+          </div>
+          <button onClick={handleGenerateAlerts} className="btn-primary">
+            🔄 Generate Alerts
+          </button>
         </div>
-        <button onClick={handleGenerateAlerts} className="btn-primary">
-          🔄 Generate Alerts
-        </button>
-      </div>
 
-      {/* ── REDESIGNED SUMMARY SECTION ── */}
-      <div className="mb-6">
-        {/* Section label */}
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
-            Alert Overview
-          </span>
-          {/* Resolution progress bar */}
-          {totalAlerts > 0 && (
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-gray-400">Resolution</span>
-              <div className="w-28 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+        {/* ✅ STICKY SUMMARY SECTION */}
+        <div className="bg-white shadow-md rounded-lg p-4 mb-6 sticky top-16 z-30">
+          {/* Section label */}
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+              Alert Overview
+            </span>
+            {/* Resolution progress bar */}
+            {totalAlerts > 0 && (
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-gray-400">Resolution</span>
+                <div className="w-28 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-700"
+                    style={{
+                      width: `${resolutionRate}%`,
+                      background: resolutionRate >= 70
+                        ? '#10b981'
+                        : resolutionRate >= 40
+                        ? 'rgb(245, 158, 11)'
+                        : '#ef4444'
+                    }}
+                  />
+                </div>
+                <span className="text-xs font-semibold text-gray-600">{resolutionRate}%</span>
+              </div>
+            )}
+          </div>
+
+          {/* Stat Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            {summaryStats.map((stat, idx) => (
+              <div
+                key={idx}
+                style={{
+                  backgroundColor: stat.bg,
+                  borderColor: stat.border,
+                }}
+                className="relative rounded-xl border p-4 overflow-hidden group transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+              >
+                {/* Top row: icon + label */}
+                <div className="flex items-center justify-between mb-3">
+                  <span
+                    className="text-xs font-semibold uppercase tracking-wide"
+                    style={{ color: stat.accent }}
+                  >
+                    {stat.label}
+                  </span>
+                  <span
+                    className="p-1.5 rounded-lg"
+                    style={{ color: stat.accent, backgroundColor: 'white', opacity: 0.85 }}
+                  >
+                    {stat.icon}
+                  </span>
+                </div>
+
+                {/* Value */}
+                <div className="flex items-end gap-2 mb-1">
+                  <span
+                    className="text-3xl font-bold leading-none tracking-tight"
+                    style={{ color: stat.accent }}
+                  >
+                    {stat.value}
+                  </span>
+                  {/* Pulse dot for new alerts */}
+                  {stat.pulse && stat.value > 0 && (
+                    <span className="mb-1 relative flex h-2 w-2">
+                      <span
+                        className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                        style={{ backgroundColor: stat.accent }}
+                      />
+                      <span
+                        className="relative inline-flex rounded-full h-2 w-2"
+                        style={{ backgroundColor: stat.accent }}
+                      />
+                    </span>
+                  )}
+                </div>
+
+                {/* Sub label */}
+                <p className="text-xs text-gray-500">{stat.sub}</p>
+
+                {/* Bottom accent line */}
                 <div
-                  className="h-full rounded-full transition-all duration-700"
-                  style={{
-                    width: `${resolutionRate}%`,
-                    background: resolutionRate >= 70
-                      ? '#10b981'
-                      : resolutionRate >= 40
-                      ? '#f59e0b'
-                      : '#ef4444'
-                  }}
+                  className="absolute bottom-0 left-0 h-0.5 w-full opacity-40 group-hover:opacity-100 transition-opacity duration-200"
+                  style={{ backgroundColor: stat.accent }}
                 />
               </div>
-              <span className="text-xs font-semibold text-gray-600">{resolutionRate}%</span>
+            ))}
+          </div>
+
+          {/* Filter Checkbox - Inside Sticky Section */}
+          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showAcknowledged}
+                onChange={(e) => setShowAcknowledged(e.target.checked)}
+                className="mr-3 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                Show Acknowledged Alerts Only
+              </span>
+              <span className="ml-2 text-xs text-gray-500">
+                ({showAcknowledged ? acknowledgedAlerts : unacknowledgedAlerts} alerts)
+              </span>
+            </label>
+          </div>
+        </div>
+        {/* ✅ END STICKY SUMMARY SECTION */}
+
+        {/* ✅ TABLE WITH STICKY HEADER */}
+        <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          {/* Table Title - NOT STICKY */}
+          <div className="px-6 py-3 border-b border-gray-200 bg-gray-50">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">
+                {showAcknowledged ? 'Acknowledged Alerts' : 'Active Alerts'}
+              </h3>
+              <span className="text-sm text-gray-500">
+                Showing {displayedAlerts.length} of {totalAlerts} total alerts
+              </span>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="text-gray-600 mt-4">Loading alerts...</p>
+            </div>
+          ) : displayedAlerts.length === 0 ? (
+            <div className="text-center py-12 bg-gray-50">
+              <div className="text-6xl mb-4">
+                {showAcknowledged ? '✅' : '🎉'}
+              </div>
+              <p className="text-gray-600 text-lg font-medium">
+                {showAcknowledged
+                  ? 'No acknowledged alerts yet'
+                  : 'No active alerts! All items have sufficient stock.'}
+              </p>
+              <p className="text-gray-500 text-sm mt-2">
+                {!showAcknowledged && 'Great job maintaining inventory levels!'}
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <div className="max-h-[calc(100vh-500px)] overflow-y-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  {/* ✅ STICKY TABLE HEADER */}
+                  <thead className="bg-gray-50 sticky top-0 z-20">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">Item Code</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">Item Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">Category</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase bg-gray-50">Qty On Hand</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase bg-gray-50">Min Level</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase bg-gray-50">Shortage</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">Alert Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {displayedAlerts.map((alert) => {
+                      const isNew = isNewAlert(alert.alertDate);
+                      return (
+                        <tr
+                          key={alert.alertId}
+                          className={`hover:bg-gray-50 ${isNew && !alert.isAcknowledged ? 'bg-yellow-50' : ''}`}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {isNew && !alert.isAcknowledged ? (
+                              <div className="flex items-center">
+                                <span className="relative flex h-3 w-3 mr-2">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                </span>
+                                <span className="px-2 py-1 text-xs font-bold text-red-700 bg-red-100 rounded-full">NEW</span>
+                              </div>
+                            ) : alert.isAcknowledged ? (
+                              <span className="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">✓ Done</span>
+                            ) : (
+                              <span className="px-2 py-1 text-xs font-medium text-yellow-500 bg-gray-100 rounded-full">Pending</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{alert.itemCode}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{alert.itemName}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{alert.categoryName}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
+                            <span className="font-bold text-red-600">{alert.qtyOnHand}</span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600">{alert.minStockLevel}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">{alert.shortage}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                            <div>{new Date(alert.alertDate).toLocaleDateString()}</div>
+                            <div className="text-xs text-gray-400">
+                              {new Date(alert.alertDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                            {isNew && !alert.isAcknowledged && (
+                              <div className="text-xs text-red-600 font-medium mt-1">{"< 24 hours ago"}</div>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm">
+                            {!alert.isAcknowledged ? (
+                              <button
+                                onClick={() => handleAcknowledge(alert.alertId)}
+                                className="text-blue-600 hover:text-blue-800 font-medium hover:underline"
+                              >
+                                ✓ Acknowledge
+                              </button>
+                            ) : (
+                              <div className="text-green-600 text-xs">
+                                <div className="font-medium">✓ Acknowledged</div>
+                                {alert.acknowledgedByName && <div className="text-gray-500">by {alert.acknowledgedByName}</div>}
+                                {alert.acknowledgedAt && <div className="text-gray-400">{new Date(alert.acknowledgedAt).toLocaleDateString()}</div>}
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
-
-        {/* Stat Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {summaryStats.map((stat, idx) => (
-            <div
-              key={idx}
-              style={{
-                backgroundColor: stat.bg,
-                borderColor: stat.border,
-              }}
-              className="relative rounded-xl border p-4 overflow-hidden group transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
-            >
-              {/* Top row: icon + label */}
-              <div className="flex items-center justify-between mb-3">
-                <span
-                  className="text-xs font-semibold uppercase tracking-wide"
-                  style={{ color: stat.accent }}
-                >
-                  {stat.label}
-                </span>
-                <span
-                  className="p-1.5 rounded-lg"
-                  style={{ color: stat.accent, backgroundColor: 'white', opacity: 0.85 }}
-                >
-                  {stat.icon}
-                </span>
-              </div>
-
-              {/* Value */}
-              <div className="flex items-end gap-2 mb-1">
-                <span
-                  className="text-3xl font-bold leading-none tracking-tight"
-                  style={{ color: stat.accent }}
-                >
-                  {stat.value}
-                </span>
-                {/* Pulse dot for new alerts */}
-                {stat.pulse && stat.value > 0 && (
-                  <span className="mb-1 relative flex h-2 w-2">
-                    <span
-                      className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                      style={{ backgroundColor: stat.accent }}
-                    />
-                    <span
-                      className="relative inline-flex rounded-full h-2 w-2"
-                      style={{ backgroundColor: stat.accent }}
-                    />
-                  </span>
-                )}
-              </div>
-
-              {/* Sub label */}
-              <p className="text-xs text-gray-500">{stat.sub}</p>
-
-              {/* Bottom accent line */}
-              <div
-                className="absolute bottom-0 left-0 h-0.5 w-full opacity-40 group-hover:opacity-100 transition-opacity duration-200"
-                style={{ backgroundColor: stat.accent }}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* ── END SUMMARY SECTION ── */}
-
-      {/* Filter Checkbox */}
-      <div className="card mb-6">
-        <label className="flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            checked={showAcknowledged}
-            onChange={(e) => setShowAcknowledged(e.target.checked)}
-            className="mr-3 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-          />
-          <span className="text-sm font-medium text-gray-700">
-            Show Acknowledged Alerts Only
-          </span>
-          <span className="ml-2 text-xs text-gray-500">
-            ({showAcknowledged ? acknowledgedAlerts : unacknowledgedAlerts} alerts)
-          </span>
-        </label>
-      </div>
-
-      {/* Alerts Table */}
-      <div className="card">
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">
-            {showAcknowledged ? 'Acknowledged Alerts' : 'Active Alerts'}
-          </h3>
-          <span className="text-sm text-gray-500">
-            Showing {displayedAlerts.length} of {totalAlerts} total alerts
-          </span>
-        </div>
-
-        {loading ? (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4">Loading alerts...</p>
-          </div>
-        ) : displayedAlerts.length === 0 ? (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <div className="text-6xl mb-4">
-              {showAcknowledged ? '✅' : '🎉'}
-            </div>
-            <p className="text-gray-600 text-lg font-medium">
-              {showAcknowledged
-                ? 'No acknowledged alerts yet'
-                : 'No active alerts! All items have sufficient stock.'}
-            </p>
-            <p className="text-gray-500 text-sm mt-2">
-              {!showAcknowledged && 'Great job maintaining inventory levels!'}
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Item Code</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Item Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Qty On Hand</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Min Level</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Shortage</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Alert Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {displayedAlerts.map((alert) => {
-                  const isNew = isNewAlert(alert.alertDate);
-                  return (
-                    <tr
-                      key={alert.alertId}
-                      className={`hover:bg-gray-50 ${isNew && !alert.isAcknowledged ? 'bg-yellow-50' : ''}`}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {isNew && !alert.isAcknowledged ? (
-                          <div className="flex items-center">
-                            <span className="relative flex h-3 w-3 mr-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                            </span>
-                            <span className="px-2 py-1 text-xs font-bold text-red-700 bg-red-100 rounded-full">NEW</span>
-                          </div>
-                        ) : alert.isAcknowledged ? (
-                          <span className="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">✓ Done</span>
-                        ) : (
-                          <span className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">Pending</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{alert.itemCode}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{alert.itemName}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{alert.categoryName}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
-                        <span className="font-bold text-red-600">{alert.qtyOnHand}</span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600">{alert.minStockLevel}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 font-medium">{alert.shortage}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                        <div>{new Date(alert.alertDate).toLocaleDateString()}</div>
-                        <div className="text-xs text-gray-400">
-                          {new Date(alert.alertDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </div>
-                        {isNew && !alert.isAcknowledged && (
-                          <div className="text-xs text-red-600 font-medium mt-1">{"< 24 hours ago"}</div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        {!alert.isAcknowledged ? (
-                          <button
-                            onClick={() => handleAcknowledge(alert.alertId)}
-                            className="text-blue-600 hover:text-blue-800 font-medium hover:underline"
-                          >
-                            ✓ Acknowledge
-                          </button>
-                        ) : (
-                          <div className="text-green-600 text-xs">
-                            <div className="font-medium">✓ Acknowledged</div>
-                            {alert.acknowledgedByName && <div className="text-gray-500">by {alert.acknowledgedByName}</div>}
-                            {alert.acknowledgedAt && <div className="text-gray-400">{new Date(alert.acknowledgedAt).toLocaleDateString()}</div>}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
     </Layout>
   );
