@@ -4,7 +4,6 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Auth Pages
 import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
 import UserManagement from './pages/admin/UserManagement';
 
 // Dashboard
@@ -34,8 +33,6 @@ function App() {
             {/* ================= PUBLIC ROUTES ================= */}
 
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-
             {/* ================= ADMIN ROUTES ================= */}
 
             <Route
